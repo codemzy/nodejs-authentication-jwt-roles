@@ -25,8 +25,8 @@ mongo.connect(process.env.MONGO_URL, function (error, db) {
     }
     
     // routes
-    // const routes = require('./routes/routes.js');
-    // routes(app);
+    const routes = require('./routes/routes.js');
+    routes(app, db);
     
     // start the server
     app.listen(app.get('port'), function() {

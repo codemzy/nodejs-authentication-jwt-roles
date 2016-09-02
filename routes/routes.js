@@ -11,7 +11,7 @@ const cors = require('cors');
 module.exports = function (app, db) {
     
     // controllers
-    const Authentication = require('../controllers/authentication');
+    const Authentication = require('../controllers/authentication')(db);
     // services
     const passport = require('passport');
     require('../services/passport.js')(db); // this needs to be run but is not directly referenced in this file

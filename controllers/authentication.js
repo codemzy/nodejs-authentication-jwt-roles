@@ -14,8 +14,10 @@ function tokenForUser(user) {
 }
 
 module.exports = function (db) {
+    
+    const module = {};
 
-    this.signup = function(req, res, next) {
+    module.signup = function(req, res, next) {
         const EMAIL = req.body.email;
         const PASSWORD = req.body.password;
         // check if any data missing
@@ -46,12 +48,14 @@ module.exports = function (db) {
             });
             
         });
-    
     };
     
-    this.signin = function(req, res, next) {
+    module.signin = function(req, res, next) {
         // User has already had their email and password auth'd we just need to give them a token
         res.send({ token: tokenForUser(req.user) });
     };
+    
+    return module;
+
 
 };

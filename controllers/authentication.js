@@ -1,6 +1,7 @@
 'use strict';
 
 const jwt = require('jwt-simple');
+const bcrypt = require('bcrypt-nodejs');
 
 // const User = require('../models/user');
 
@@ -11,6 +12,23 @@ function tokenForUser(user) {
     const timestamp = new Date().getTime();
     // the subject (sub) of this token is the user id, iat = issued at time
     return jwt.encode({ sub: user.id, iat: timestamp }, secret);
+}
+
+function hashPassword(password, next) {
+    // generate a salt then run callback
+    bcrypt.genSalt(10, function(err, salt) {
+        if (err) {
+            return next(err);
+        }
+        // hash (encrypt) the password using the salt then run callback
+        bcrypt.hash(password, salt, null, function(err, hash) {
+            if (err) {
+                return next(err);
+            }
+            // return encrypted password
+            return hash;
+        });
+    });
 }
 
 module.exports = function (db) {
@@ -33,10 +51,12 @@ module.exports = function (db) {
             if (existingUser) {
                 return res.status(422).send({ error: 'Email is in use'});
             }
-            // If a user with email does not exist, create and save user record
+            // If a user with email does not exist, hash passord
+            const HASHPASSWORD = hashPassword(PASSWORD, next);
+            // create and save user record
             const USER = {
                 email: EMAIL,
-                password: PASSWORD
+                password: HASHPASSWORD
             };
             // save the user we just created
             db.collection('users').insertOne(USER, function(err, result) {

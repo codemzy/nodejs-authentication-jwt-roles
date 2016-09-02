@@ -14,19 +14,19 @@ function tokenForUser(user) {
     return jwt.encode({ sub: user.id, iat: timestamp }, secret);
 }
 
-function hashPassword(password, next) {
+function hashPassword(password, callback) {
     // generate a salt then run callback
     bcrypt.genSalt(10, function(err, salt) {
         if (err) {
-            return next(err);
+            return callback(err);
         }
         // hash (encrypt) the password using the salt then run callback
         bcrypt.hash(password, salt, null, function(err, hash) {
             if (err) {
-                return next(err);
+                return callback(err);
             }
-            // return encrypted password
-            return hash;
+            // overwrite plain text password with encrypted password
+            callback(null, hash);
         });
     });
 }
@@ -52,21 +52,24 @@ module.exports = function (db) {
                 return res.status(422).send({ error: 'Email is in use'});
             }
             // If a user with email does not exist, hash passord
-            const HASHPASSWORD = hashPassword(PASSWORD, next);
-            // create and save user record
-            const USER = {
-                email: EMAIL,
-                password: HASHPASSWORD
-            };
-            // save the user we just created
-            db.collection('users').insertOne(USER, function(err, result) {
+            hashPassword(PASSWORD, function(err, hash) {
                 if (err) {
                     return next(err);
                 }
-                // Respond to request indicating the user was created
-                res.json({ token: tokenForUser(USER) });
+                // create and save user record
+                const USER = {
+                    email: EMAIL,
+                    password: hash
+                };
+                // save the user we just created
+                db.collection('users').insertOne(USER, function(err, result) {
+                    if (err) {
+                        return next(err);
+                    }
+                    // Respond to request indicating the user was created
+                    res.json({ token: tokenForUser(USER) });
+                });
             });
-            
         });
     };
     

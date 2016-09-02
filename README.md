@@ -8,6 +8,8 @@
 
 
 Backend Authentication API with NodeJS
+Removed Mongoose and just using MongoDB
+// For Mongoose version see https://github.com/codemzy/nodejs-authentication-jwt
 
 Using:
 
@@ -16,6 +18,7 @@ Using:
     "dotenv": "~2.0.0",
     "express": "~4.14.0",
     "jwt-simple": "~0.5.0",
+    "mongodb": "~2.2.9",
     "mongoose": "~4.5.9",
     "morgan": "~1.7.0",
     "passport": "~0.3.2",

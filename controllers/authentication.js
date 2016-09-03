@@ -65,7 +65,7 @@ module.exports = function (db) {
                         return next(err);
                     }
                     // Respond to request indicating the user was created
-                    res.json({ token: tokenForUser(USER) });
+                    res.json({ token: tokenForUser({ id: result.insertedId }) });
                 });
             });
         });
@@ -73,7 +73,7 @@ module.exports = function (db) {
     
     module.signin = function(req, res, next) {
         // User has already had their email and password auth'd we just need to give them a token
-        res.send({ token: tokenForUser(req.user) });
+        res.send({ token: tokenForUser({ id: req.user._id }) });
     };
     
     return module;

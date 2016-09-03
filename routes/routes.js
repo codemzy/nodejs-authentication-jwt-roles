@@ -28,9 +28,9 @@ module.exports = function (app, db) {
         // to recieve post requests from signup form
         .post(jsonParser, Authentication.signup);
         
-    // take user data and create user in DB
+    // take user data and check user exists in DB
     app.route('/signin')
-        // to recieve post requests from signup form
+        // to recieve post requests from signin form
         .post(jsonParser, requireSignIn, Authentication.signin);
         
     // protected route

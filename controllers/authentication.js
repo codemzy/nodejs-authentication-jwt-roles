@@ -8,8 +8,9 @@ const secret = process.env.SECRET_STR;
 
 function tokenForUser(user) {
     const timestamp = new Date().getTime();
+    const expireTime = timestamp + (1000 * 60 * 60 * 24 * 7); // expires in 7 days
     // the subject (sub) of this token is the user id, iat = issued at time
-    return jwt.encode({ sub: user.id, iat: timestamp }, secret);
+    return jwt.encode({ sub: user.id, iat: timestamp, exp: expireTime }, secret);
 }
 
 function hashPassword(password, callback) {

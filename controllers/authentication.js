@@ -3,8 +3,6 @@
 const jwt = require('jwt-simple');
 const bcrypt = require('bcrypt-nodejs');
 
-// const User = require('../models/user');
-
 require('dotenv').config();
 const secret = process.env.SECRET_STR;
 

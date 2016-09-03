@@ -3,8 +3,6 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const LocalStrategy = require('passport-local');
 
-// const User = require('../models/user');
-
 const bcrypt = require('bcrypt-nodejs');
 require('dotenv').config();
 const secret = process.env.SECRET_STR;
@@ -36,7 +34,6 @@ module.exports = function (db) {
                 return done(null, false);
             }
             // email found, compare passwords
-            console.log(user.password); // TO REMOVE just checking if user.password returns the hashed password for comparing
             comparePassword(password, user.password, function(err, isMatch) {
                 if (err) {
                     return done(err);

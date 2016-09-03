@@ -1,7 +1,7 @@
 'use strict';
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
-const cors = require('cors');
+// const cors = require('cors');
 
 // cors setup 
 // var corsOptions = {

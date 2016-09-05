@@ -14,7 +14,7 @@ const db = require('../server').db;
 module.exports = function (app) {
     
     // controllers
-    const Authentication = require('../controllers/authentication')(db);
+    const Authentication = require('../controllers/authentication');
     // services
     const passport = require('passport');
     require('../services/passport.js')(db); // this needs to be run but is not directly referenced in this file
@@ -29,6 +29,10 @@ module.exports = function (app) {
     // USER ROUTES
     var userRoutes = require('./user_routes');
     app.use('/user', userRoutes);
+    
+    // PROTECTED ROUTES
+    
+    // ANON ROUTES
         
     // protected route
     app.route('/protected')

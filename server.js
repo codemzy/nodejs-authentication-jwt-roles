@@ -21,6 +21,7 @@ mongo.connect(process.env.MONGO_URL, function (error, db) {
     console.log('MongoDB successfully connected on port 27017.');
     }
     
+    // export db connection so can be required in other files
     exports.db = db;
     
     // routes

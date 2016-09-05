@@ -7,7 +7,7 @@ const jsonParser = bodyParser.json();
 const db = require('../server').db;
 
 // controllers
-const Authentication = require('../controllers/authentication')(db);
+const Authentication = require('../controllers/authentication');
 // services
 const passport = require('passport');
 require('../services/passport.js')(db); // this needs to be run but is not directly referenced in this file

@@ -25,5 +25,7 @@ router.post('/signin', jsonParser, requireSignIn, Authentication.signin);
 // FORGOT PASSWORD
 // check user email exists in DB
 router.post('/forgotten', jsonParser, Authentication.forgotpw);
+// check a reset link is valid
+router.get('/reset/:resetToken', Authentication.resetCheck);
 
 module.exports = router;

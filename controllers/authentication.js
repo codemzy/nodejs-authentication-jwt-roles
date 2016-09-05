@@ -88,15 +88,43 @@ exports.forgotpw = function(req, res, next) {
             return next(err);
         }
         // If a user with the email does exist, send an email with a reset password link
-        // TODO
-        // link needs to expire after an hour, we could add a token to the user in the DB and this needs to match the token and email and not be expired
+        // link expires after an hour, add a token to the user in the DB and this needs to match the token and email and not be expired
         if (existingUser) {
-            return res.send({ message: 'Email found need to send email'});
+            // timestamp so can check if over an hour old and random number to create resetToken
+            const timestamp = new Date().getTime();
+            const randomNum = Math.floor(Math.random() * 10000);
+            const resetToken = timestamp + '-' + randomNum;
+            // add to db
+            db.collection('users').updateOne({ email: EMAIL }, { $set: { "resetPassword" : resetToken } }, function(err, updated) {
+                if (err) {
+                    return next(err);
+                }
+                // send via email TO DO
+                return res.send({ message: 'Email found need to send email', reset: resetToken });
+            });
         } else {
             // email does not exist, return an error
             return res.status(422).send({ error: 'Email does not exist'});
         }
     });
+};
+
+exports.resetCheck = function(req, res, next) {
+    const tokenArr = req.params.resetToken.split("-");
+    const resetToken = tokenArr[0];
+    const now = new Date().getTime();
+    const difference = resetToken - now;
+    const timeLeft = Math.floor(difference / 1000 / 60) + 60;
+    if (timeLeft < 1) {
+        // TOKEN NOT VALID
+        return res.status(422).send({ error: 'Reset link has expired'});
+    } else {
+        return res.send({ message: 'Reset link valid', timeleft: timeLeft });
+    }
+    
+};
+
+exports.resetpw = function(req, res, next) {
     
 };
 

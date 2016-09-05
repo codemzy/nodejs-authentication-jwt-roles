@@ -141,7 +141,7 @@ exports.resetpw = function(req, res, next) {
         if (!existingUser) {
             return res.status(422).send({ error: 'Email not found'});
         }
-        // TO DO - CHECK IF RESET LINK MATCHES
+        // If the reset link doesn't match, return an error
         if (existingUser.resetPassword !== RESET_TOKEN) {
             return res.status(422).send({ error: 'Reset link not valid'});
         }

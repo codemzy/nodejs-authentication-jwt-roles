@@ -28,7 +28,7 @@ router.post('/forgotten', jsonParser, Authentication.forgotpw);
 // check a reset link is valid
 router.get('/reset/:resetToken', Authentication.resetCheck);
 // take password data and set new password
-router.post('/reset/password', jsonParser, Authentication.resetpw);
+router.post('/password/reset', jsonParser, Authentication.resetpw);
 
 
 module.exports = router;

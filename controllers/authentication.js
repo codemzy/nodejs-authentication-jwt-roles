@@ -127,6 +127,7 @@ exports.resetCheck = function(req, res, next) {
 exports.resetpw = function(req, res, next) {
     const EMAIL = req.body.email;
     const PASSWORD = req.body.password;
+    const RESET_TOKEN = req.body.reset;
     // check if any data missing
     if (!EMAIL || !PASSWORD) {
         return res.status(422).send({ error: 'You must provide email and new password'});
@@ -140,7 +141,11 @@ exports.resetpw = function(req, res, next) {
         if (!existingUser) {
             return res.status(422).send({ error: 'Email not found'});
         }
-        // If a user with email does exist, hash new passord
+        // TO DO - CHECK IF RESET LINK MATCHES
+        if (existingUser.resetPassword !== RESET_TOKEN) {
+            return res.status(422).send({ error: 'Reset link not valid'});
+        }
+        // If a user with email does exist and reset matches, hash new passord
         hashPassword(PASSWORD, function(err, hash) {
             if (err) {
                 return next(err);
@@ -153,7 +158,7 @@ exports.resetpw = function(req, res, next) {
                     return next(err);
                 }
                 // Respond to request indicating the user was created
-                res.json({ token: tokenForUser({ id: updated.upsertedId }) });
+                res.json({ token: tokenForUser({ id: existingUser._id }) });
             });
         });
     });

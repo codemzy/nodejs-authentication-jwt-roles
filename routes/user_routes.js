@@ -3,14 +3,11 @@ var router = express.Router();
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 
-// get db connection 
-const db = require('../server').db;
-
 // controllers
 const Authentication = require('../controllers/authentication');
 // services
 const passport = require('passport');
-require('../services/passport.js')(db); // this needs to be run but is not directly referenced in this file
+require('../services/passport.js'); // this needs to be run but is not directly referenced in this file
 
 // session false as we are not using cookies, using tokens
 const requireSignIn = passport.authenticate('local', { session: false });

@@ -1,3 +1,5 @@
+'use strict';
+
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
@@ -18,63 +20,67 @@ const comparePassword = function(suppliedPassword, userPassword, callback) {
     });
 };
 
-module.exports = function (db) {
+// get db connection 
+const db = require('../server').db;
+// so can create object id to find user in jwtLogin
+let ObjectID = require('mongodb').ObjectID;
 
-    // Create local strategy for signing in with username and password
-    const localOptions = { usernameField: 'email' };
-    const localLogin = new LocalStrategy(localOptions, function(email, password, done) {
-        // verify the email and password call done with user if correct
-        // otherwise call done with false
-        db.collection('users').findOne({ email: email }, function(err, user) {
+// Create local strategy for signing in with username and password
+const localOptions = { usernameField: 'email' };
+const localLogin = new LocalStrategy(localOptions, function(email, password, done) {
+    // verify the email and password call done with user if correct
+    // otherwise call done with false
+    db.collection('users').findOne({ email: email }, function(err, user) {
+        if (err) {
+            return done(err, false);
+        }
+        // user not found - no record for email address
+        if (!user) {
+            return done(null, false);
+        }
+        // email found, compare passwords
+        comparePassword(password, user.password, function(err, isMatch) {
             if (err) {
-                return done(err, false);
+                return done(err);
             }
-            // user not found - no record for email address
-            if (!user) {
+            if (!isMatch) {
                 return done(null, false);
             }
-            // email found, compare passwords
-            comparePassword(password, user.password, function(err, isMatch) {
-                if (err) {
-                    return done(err);
-                }
-                if (!isMatch) {
-                    return done(null, false);
-                }
-                return done(null, user);
-            });
-        });
-        
-    });
-    
-    // Set up options for JWT strategy
-    const jwtOptions = {
-        // look in the header of the request for the token
-        jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-        // decode with the secret
-        secretOrKey: secret
-    };
-    
-    // Create JWT strategy
-    // payload is the token (sub) and timestamp (iat)
-    const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
-        // see if the user ID in the payload exists in our database
-        // if it does call done with that user
-        // otherwise call done without a user object
-        db.collection('users').findById(payload.sub, function(err, user) {
-            if (err) {
-                return done(err, false);
-            }
-            if (user) {
-                done(null, user);
-            } else {
-                done(null, false);
-            }
+            return done(null, user);
         });
     });
     
-    // Tell passport to use this strategy
-    passport.use(jwtLogin);
-    passport.use(localLogin);
+});
 
+// Set up options for JWT strategy
+const jwtOptions = {
+    // look in the header of the request for the token
+    jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+    // decode with the secret
+    secretOrKey: secret
 };
+
+// Create JWT strategy
+// payload is the token (sub) and timestamp (iat)
+const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
+    // see if the user ID in the payload exists in our database
+    // if it does call done with that user
+    // otherwise call done without a user object
+    let obj_id = new ObjectID(payload.sub);
+    db.collection('users').findOne({ "_id": obj_id }, function(err, user) {
+        if (err) {
+            return done(err, false);
+        }
+        if (user) {
+            done(null, user);
+        } else {
+            done(null, false);
+        }
+    });
+});
+
+// Tell passport to use this strategy
+passport.use(jwtLogin);
+passport.use(localLogin);
+
+

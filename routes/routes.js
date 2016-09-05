@@ -8,7 +8,10 @@ const jsonParser = bodyParser.json();
 //   origin: 'https://react-redux-auth-frontend-codemzy.c9users.io'
 // };
 
-module.exports = function (app, db) {
+// get db connection 
+const db = require('../server').db;
+
+module.exports = function (app) {
     
     // controllers
     const Authentication = require('../controllers/authentication')(db);
@@ -23,23 +26,27 @@ module.exports = function (app, db) {
     // allow requests from cross origin
     // app.use(cors(corsOptions));
     
-    // SIGN UP
-    // take user data and create user in DB
-    app.route('/signup')
-        // to recieve post requests from signup form
-        .post(jsonParser, Authentication.signup);
+    // // SIGN UP
+    // // take user data and create user in DB
+    // app.route('/signup')
+    //     // to recieve post requests from signup form
+    //     .post(jsonParser, Authentication.signup);
     
-    // SIGN IN    
-    // take user data and check user exists in DB
-    app.route('/signin')
-        // to recieve post requests from signin form
-        .post(jsonParser, requireSignIn, Authentication.signin);
+    // // SIGN IN    
+    // // take user data and check user exists in DB
+    // app.route('/signin')
+    //     // to recieve post requests from signin form
+    //     .post(jsonParser, requireSignIn, Authentication.signin);
         
-    // FORGOT PASSWORD
-    // check user email exists in DB
-    app.route('/forgotten')
-        // to recieve post requests from forgotton pw form
-        .post(jsonParser, Authentication.forgotpw);
+    // // FORGOT PASSWORD
+    // // check user email exists in DB
+    // app.route('/forgotten')
+    //     // to recieve post requests from forgotton pw form
+    //     .post(jsonParser, Authentication.forgotpw);
+    
+    // USER ROUTES
+    var userRoutes = require('./user_routes');
+    app.use('/user', userRoutes);
         
     // protected route
     app.route('/protected')

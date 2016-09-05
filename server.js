@@ -21,9 +21,11 @@ mongo.connect(process.env.MONGO_URL, function (error, db) {
     console.log('MongoDB successfully connected on port 27017.');
     }
     
+    exports.db = db;
+    
     // routes
     const routes = require('./routes/routes.js');
-    routes(app, db);
+    routes(app);
     
     // start the server
     app.listen(app.get('port'), function() {

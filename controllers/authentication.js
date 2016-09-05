@@ -77,6 +77,30 @@ module.exports = function (db) {
         res.send({ token: tokenForUser({ id: req.user._id }) });
     };
     
+    module.forgotpw = function(req, res, next) {
+        const EMAIL = req.body.email;
+        // check if any data missing
+        if (!EMAIL) {
+            return res.status(422).send({ error: 'You must provide a valid email address'});
+        }
+        // See if a user with the given email exists
+        db.collection('users').findOne({ email: EMAIL }, function(err, existingUser) {
+            if (err) {
+                return next(err);
+            }
+            // If a user with the email does exist, send an email with a reset password link
+            // TODO
+            // link needs to expire after an hour, we could add a token to the user in the DB and this needs to match the token and email and not be expired
+            if (existingUser) {
+                return res.send({ message: 'Email found need to send email'});
+            } else {
+                // email does not exist, return an error
+                return res.status(422).send({ error: 'Email does not exist'});
+            }
+        });
+        
+    };
+    
     return module;
 
 

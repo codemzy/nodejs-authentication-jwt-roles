@@ -125,6 +125,37 @@ exports.resetCheck = function(req, res, next) {
 };
 
 exports.resetpw = function(req, res, next) {
-    
+    const EMAIL = req.body.email;
+    const PASSWORD = req.body.password;
+    // check if any data missing
+    if (!EMAIL || !PASSWORD) {
+        return res.status(422).send({ error: 'You must provide email and new password'});
+    }
+    // See if a user with the given email exists
+    db.collection('users').findOne({ email: EMAIL }, function(err, existingUser) {
+        if (err) {
+            return next(err);
+        }
+        // If a user with the email does not exist, return an error
+        if (!existingUser) {
+            return res.status(422).send({ error: 'Email not found'});
+        }
+        // If a user with email does exist, hash new passord
+        hashPassword(PASSWORD, function(err, hash) {
+            if (err) {
+                return next(err);
+            }
+            // new password hash
+            const passwordHash = hash;
+            // update to db
+            db.collection('users').updateOne({ email: EMAIL }, { $set: { "password" : passwordHash }, $unset: { "resetPassword": "" } }, function(err, updated) {
+                if (err) {
+                    return next(err);
+                }
+                // Respond to request indicating the user was created
+                res.json({ token: tokenForUser({ id: updated.upsertedId }) });
+            });
+        });
+    });
 };
 

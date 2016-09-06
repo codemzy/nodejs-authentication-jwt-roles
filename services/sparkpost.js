@@ -19,7 +19,7 @@ exports.forgotPasswordEmail = function (email, resetToken, callback) {
           <p>' + resetToken + '</p>\
           <p>This password reset is only valid for the next 60 minutes.</p>\
           <p>No changes have been made to your account, so if you don\'t want to change your password, or requested a new password in error, you don\'t need to take any action and can safely ignore this email.</p>\
-          <p>Support at' + APP_NAME + '</p>\
+          <p>Support at ' + APP_NAME + '</p>\
           </body></html>'
         },
         recipients: [

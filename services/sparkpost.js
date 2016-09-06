@@ -5,6 +5,36 @@ var SparkPost = require('sparkpost');
 var sp = new SparkPost(SPARKPOST_KEY);
 
 const APP_NAME = 'My App';
+const APP_EMAIL = 'support@myapp.com';
+
+exports.welcomeEmail = function (email, callback) {
+ 
+    sp.transmissions.send({
+      transmissionBody: {
+        content: {
+          from: APP_EMAIL,
+          subject: 'App Name: Your new account',
+          html:'<html><body><p>Hello and welcome to ' + APP_NAME + '!</p>\
+          <p>Thanks so much for joining us.</p>\
+          <p>You can login to your ' + APP_NAME + ' account right now to get started.</p>\
+          <p>Have any questions? Just shoot us an email! We’re always here to help.</p>\
+          <p>Support at ' + APP_NAME + '</p>\
+          </body></html>'
+        },
+        recipients: [
+          {address: email}
+        ]
+      }
+    }, function(err, res) {
+      if (err) {
+        console.log('Whoops! Something went wrong with the forgotPasswordEmail');
+        callback(err);
+      } else {
+        callback(null, res);
+      }
+    });
+
+};
 
 
 exports.forgotPasswordEmail = function (email, resetToken, callback) {
@@ -12,7 +42,7 @@ exports.forgotPasswordEmail = function (email, resetToken, callback) {
     sp.transmissions.send({
       transmissionBody: {
         content: {
-          from: 'testing@sparkpostbox.com',
+          from: APP_EMAIL,
           subject: 'App Name: Password Reset',
           html:'<html><body><p>Someone (hopefully you) requested a new password for the ' + APP_NAME + ' account for ' + email + '.</p>\
           <p>Use the link below to set up a new password for your account.</p>\

@@ -117,7 +117,7 @@ exports.forgotpw = function(req, res, next) {
                 if (err) {
                     return next(err);
                 }
-                // send via email TO DO
+                // SEND VIA EMAIL TO DO
                 return res.send({ message: 'Email found need to send email', reset: resetToken });
             });
         } else {

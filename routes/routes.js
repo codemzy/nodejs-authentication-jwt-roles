@@ -5,7 +5,7 @@ const jsonParser = bodyParser.json();
 
 // cors setup 
 // var corsOptions = {
-//   origin: 'https://react-redux-auth-frontend-codemzy.c9users.io'
+//   origin: 'www.anotherdomain.com'
 // };
 
 module.exports = function (app) {

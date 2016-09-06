@@ -29,10 +29,10 @@ exports.forgotPasswordEmail = function (email, resetToken, callback) {
     }, function(err, res) {
       if (err) {
         console.log('Whoops! Something went wrong with the forgotPasswordEmail');
-        console.log(err);
+        callback(err);
       } else {
         console.log('Woohoo! You just sent your first mailing!');
-        callback(res);
+        callback(null, res);
       }
     });
 

@@ -9,6 +9,7 @@ const secret = process.env.SECRET_STR;
 // get db connection 
 const db = require('../server').db;
 
+// create token
 function tokenForUser(user) {
     const timestamp = new Date().getTime();
     const expireTime = timestamp + (1000 * 60 * 60 * 24 * 7); // expires in 7 days
@@ -16,6 +17,7 @@ function tokenForUser(user) {
     return jwt.encode({ sub: user.id, iat: timestamp, exp: expireTime }, secret);
 }
 
+// hash password
 function hashPassword(password, callback) {
     // generate a salt then run callback
     bcrypt.genSalt(10, function(err, salt) {
@@ -31,6 +33,22 @@ function hashPassword(password, callback) {
             callback(null, hash);
         });
     });
+}
+
+// check reset valid
+function checkResetTime(resetToken) {
+    const tokenArr = resetToken.split("-");
+    const timestamp = tokenArr[0];
+    const now = new Date().getTime();
+    const difference = timestamp - now;
+    const timeLeft = Math.floor(difference / 1000 / 60) + 60;
+    if (timeLeft < 1) {
+        // expired
+        return false;
+    } else {
+        // valid
+        return timeLeft;
+    }
 }
 
 exports.signup = function(req, res, next) {
@@ -110,12 +128,9 @@ exports.forgotpw = function(req, res, next) {
 };
 
 exports.resetCheck = function(req, res, next) {
-    const tokenArr = req.params.resetToken.split("-");
-    const resetToken = tokenArr[0];
-    const now = new Date().getTime();
-    const difference = resetToken - now;
-    const timeLeft = Math.floor(difference / 1000 / 60) + 60;
-    if (timeLeft < 1) {
+    const resetToken = req.params.resetToken;
+    const timeLeft = checkResetTime(resetToken);
+    if (!timeLeft) {
         // TOKEN NOT VALID
         return res.status(422).send({ error: 'Reset link has expired'});
     } else {
@@ -131,6 +146,10 @@ exports.resetpw = function(req, res, next) {
     // check if any data missing
     if (!EMAIL || !PASSWORD) {
         return res.status(422).send({ error: 'You must provide email and new password'});
+    }
+    // check if reset token time is still valid
+    if (!checkResetTime(RESET_TOKEN)) {
+        return res.status(422).send({ error: 'Your forgotten password link has expired, you must use the link within 1 hour'});
     }
     // See if a user with the given email exists
     db.collection('users').findOne({ email: EMAIL }, function(err, existingUser) {

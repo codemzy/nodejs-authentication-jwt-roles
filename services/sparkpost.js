@@ -31,7 +31,6 @@ exports.forgotPasswordEmail = function (email, resetToken, callback) {
         console.log('Whoops! Something went wrong with the forgotPasswordEmail');
         callback(err);
       } else {
-        console.log('Woohoo! You just sent your first mailing!');
         callback(null, res);
       }
     });

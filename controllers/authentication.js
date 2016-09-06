@@ -8,7 +8,9 @@ const secret = process.env.SECRET_STR;
 
 // get db connection 
 const db = require('../server').db;
-const { forgotPasswordEmail } = require('../services/sparkpost');
+
+// get email services
+const email = require('../services/sparkpost');
 
 // create token
 function tokenForUser(user) {
@@ -119,7 +121,7 @@ exports.forgotpw = function(req, res, next) {
                     return next(err);
                 }
                 // SEND VIA EMAIL TO DO
-                forgotPasswordEmail(EMAIL, resetToken, function(err, res) {
+                email.forgotPasswordEmail(EMAIL, resetToken, function(err, success) {
                     if (err) {
                         return next(err);
                     }
@@ -182,8 +184,8 @@ exports.resetpw = function(req, res, next) {
                 if (err) {
                     return next(err);
                 }
-                // Respond to request indicating the user was created
-                res.json({ token: tokenForUser({ id: existingUser._id }) });
+                // Respond to request with a token now password is updated user is logged in
+                return res.json({ token: tokenForUser({ id: existingUser._id }) });
             });
         });
     });

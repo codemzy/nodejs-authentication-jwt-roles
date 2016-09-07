@@ -85,6 +85,8 @@ exports.signup = function(req, res, next) {
                 if (err) {
                     return next(err);
                 }
+                // Send a welcome email
+                email.welcomeEmail(EMAIL);
                 // Respond to request indicating the user was created
                 res.json({ token: tokenForUser({ id: result.insertedId }) });
             });
@@ -156,7 +158,7 @@ exports.resetpw = function(req, res, next) {
         return res.status(422).send({ error: 'You must provide email and new password'});
     }
     // check if reset token time is still valid
-    if (!checkResetTime(RESET_TOKEN)) {
+    if (!RESET_TOKEN || !checkResetTime(RESET_TOKEN)) {
         return res.status(422).send({ error: 'Your forgotten password link has expired, you must use the link within 1 hour'});
     }
     // See if a user with the given email exists

@@ -5,9 +5,9 @@ var SparkPost = require('sparkpost');
 var sp = new SparkPost(SPARKPOST_KEY);
 
 const APP_NAME = 'My App';
-const APP_EMAIL = 'support@myapp.com';
+const APP_EMAIL = 'testing@sparkpostbox.com';
 
-exports.welcomeEmail = function (email, callback) {
+exports.welcomeEmail = function (email) {
  
     sp.transmissions.send({
       transmissionBody: {
@@ -17,7 +17,7 @@ exports.welcomeEmail = function (email, callback) {
           html:'<html><body><p>Hello and welcome to ' + APP_NAME + '!</p>\
           <p>Thanks so much for joining us.</p>\
           <p>You can login to your ' + APP_NAME + ' account right now to get started.</p>\
-          <p>Have any questions? Just shoot us an email! We’re always here to help.</p>\
+          <p>Have any questions? Just send us an email! We’re always here to help.</p>\
           <p>Support at ' + APP_NAME + '</p>\
           </body></html>'
         },
@@ -27,10 +27,8 @@ exports.welcomeEmail = function (email, callback) {
       }
     }, function(err, res) {
       if (err) {
-        console.log('Whoops! Something went wrong with the forgotPasswordEmail');
-        callback(err);
-      } else {
-        callback(null, res);
+        console.log('Whoops! Something went wrong with the welcomeEmail');
+        console.log(err);
       }
     });
 

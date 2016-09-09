@@ -1,6 +1,5 @@
 'use strict';
-const bodyParser = require('body-parser');
-const jsonParser = bodyParser.json();
+
 // const cors = require('cors');
 
 // cors setup 
@@ -21,7 +20,7 @@ module.exports = function (app) {
     // app.use(cors(corsOptions));
     
     // USER ROUTES
-    var userRoutes = require('./user_routes');
+    const userRoutes = require('./user_routes');
     app.use('/user', userRoutes);
     
     // PROTECTED ROUTES

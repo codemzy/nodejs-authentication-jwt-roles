@@ -12,6 +12,9 @@ const db = require('../server').db;
 // get email services
 const email = require('../services/sparkpost');
 
+// get validation functions
+const validate = require('./validate');
+
 // create token
 function tokenForUser(user) {
     const timestamp = new Date().getTime();
@@ -61,6 +64,14 @@ exports.signup = function(req, res, next) {
     if (!EMAIL || !PASSWORD) {
         return res.status(422).send({ error: 'You must provide email and password'});
     }
+    // check if email is a string and a valid email format
+    if (!validate.checkString(EMAIL) || !validate.checkEmail(EMAIL)) {
+        return res.status(422).send({ error: 'Email is not valid'});
+    }
+    // check if password is a string
+    if (!validate.checkString(PASSWORD)) {
+        return res.status(422).send({ error: 'Password is not valid'});
+    }
     // See if a user with the given email exists
     db.collection('users').findOne({ email: EMAIL }, function(err, existingUser) {
         if (err) {
@@ -102,7 +113,7 @@ exports.signin = function(req, res, next) {
 exports.forgotpw = function(req, res, next) {
     const EMAIL = req.body.email;
     // check if any data missing
-    if (!EMAIL) {
+    if (!EMAIL || !validate.checkString(EMAIL)) {
         return res.status(422).send({ error: 'You must provide a valid email address'});
     }
     // See if a user with the given email exists

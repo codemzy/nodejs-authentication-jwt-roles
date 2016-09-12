@@ -23,12 +23,16 @@ exports.escapeInput = function(text) {
 };
 
 // basic email format validation
-exports.validateEmail = function(email) {
+exports.checkEmail = function(email) {
   var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
 };
 
-// check if string contains only allowed characters
-exports.validInput = function(s) {
-    
+// check if it is a string
+exports.checkString = function(text) {
+    if (typeof(text) === 'string') {
+        return true;
+    } else {
+        return false;
+    }
 };

@@ -13,7 +13,7 @@ exports.welcomeEmail = function (email) {
       transmissionBody: {
         content: {
           from: APP_EMAIL,
-          subject: 'App Name: Your new account',
+          subject: APP_NAME + ': Your new account',
           html:'<html><body><p>Hello and welcome to ' + APP_NAME + '!</p>\
           <p>Thanks so much for joining us.</p>\
           <p>You can login to your ' + APP_NAME + ' account right now to get started.</p>\
@@ -41,7 +41,7 @@ exports.forgotPasswordEmail = function (email, resetToken, callback) {
       transmissionBody: {
         content: {
           from: APP_EMAIL,
-          subject: 'App Name: Password Reset',
+          subject: APP_NAME + ': Password Reset',
           html:'<html><body><p>Someone (hopefully you) requested a new password for the ' + APP_NAME + ' account for ' + email + '.</p>\
           <p>Use the link below to set up a new password for your account.</p>\
           <p>' + resetToken + '</p>\

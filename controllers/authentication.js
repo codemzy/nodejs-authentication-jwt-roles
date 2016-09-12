@@ -172,6 +172,14 @@ exports.resetpw = function(req, res, next) {
     if (!RESET_TOKEN || !checkResetTime(RESET_TOKEN)) {
         return res.status(422).send({ error: 'Your forgotten password link has expired, you must use the link within 1 hour'});
     }
+    // check if email is a string and a valid email format
+    if (!validate.checkString(EMAIL) || !validate.checkEmail(EMAIL)) {
+        return res.status(422).send({ error: 'Email is not valid'});
+    }
+    // check if password is a string
+    if (!validate.checkString(PASSWORD)) {
+        return res.status(422).send({ error: 'Password is not valid'});
+    }
     // See if a user with the given email exists
     db.collection('users').findOne({ email: EMAIL }, function(err, existingUser) {
         if (err) {

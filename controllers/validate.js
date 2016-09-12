@@ -1,3 +1,4 @@
+'use strict';
 
 // numerical encoding of some allowed special characters
 exports.escapeInput = function(text) {

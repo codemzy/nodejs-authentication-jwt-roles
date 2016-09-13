@@ -110,6 +110,17 @@ exports.signin = function(req, res, next) {
     res.send({ token: tokenForUser({ id: req.user._id }) });
 };
 
+// TO DO VALIDATE EMAIL
+exports.emailConfirm = function(req, res, next) {
+    const emailToken = req.params.emailToken;
+    // User is already signed in so we just need to check the emailToken matches their token
+    const USER = req.user._id;
+    // TO FIRST actually issue a token when they sign up
+    // TO DO check token is valid
+    // TO DO look up user, check matches
+    res.send({ message: USER });
+};
+
 exports.forgotpw = function(req, res, next) {
     const EMAIL = req.body.email;
     // check if any data missing

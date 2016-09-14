@@ -9,6 +9,9 @@ const bcrypt = require('bcrypt-nodejs');
 require('dotenv').config();
 const secret = process.env.SECRET_STR;
 
+// get lockout functions
+const lockout = require('../controllers/lockout');
+
 // bcrypt encrypts the provided password with the salt off the user.password, and sees if the 
 // encrypted version of the provided password matches the stored encrypted password
 const comparePassword = function(suppliedPassword, userPassword, callback) {
@@ -43,14 +46,23 @@ const localLogin = new LocalStrategy(localOptions, function(req, email, password
         if (!user) {
             return done(null, false);
         }
+        // account locked out
+        if (user.lockOut && lockout.checkLockOut(user.lockOut.time)) {
+            return done(null, false);
+        }
         // email found, compare passwords
         comparePassword(password, user.password, function(err, isMatch) {
             if (err) {
                 return done(err);
             }
             if (!isMatch) {
-                console.log(req.headers);
-                return done(null, false);
+                const IP = req.headers["x-forwarded-for"];
+                lockout.failedLogIn(IP, user, function(err, isLockedOut) {
+                    if (err) {
+                        console.log("Problem updating user lockedOut object");
+                    }
+                    return done(null, false);
+                });
             }
             return done(null, user);
         });

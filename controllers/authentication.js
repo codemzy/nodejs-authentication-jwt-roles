@@ -194,12 +194,13 @@ exports.forgotpw = function(req, res, next) {
                     if (err) {
                         return next(err);
                     }
-                    return res.send({ message: 'User found and email sent', reset: resetToken });
+                    // email sent return success message
+                    return res.send({ message: 'Thank you. Please check your email.', code: 'ef' });
                 });
             });
         } else {
-            // email does not exist, return an error
-            return res.status(422).send({ error: 'Email does not exist'});
+            // email does not exist, return same message to not indicate whether a user has an account or not (privacy)
+            return res.send({ message: 'Thank you. Please check your email.', code: 'en' });
         }
     });
 };

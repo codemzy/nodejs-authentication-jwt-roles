@@ -89,7 +89,9 @@ exports.signup = function(req, res, next) {
             // create and save user record
             const USER = {
                 email: EMAIL,
-                password: hash
+                password: hash,
+                emailConfirmed: false,
+                emailLinkCode: "TO DO"
             };
             // save the user we just created
             db.collection('users').insertOne(USER, function(err, result) {

@@ -8,6 +8,8 @@ const secret = process.env.SECRET_STR;
 
 // get db connection 
 const db = require('../server').db;
+// so can create object id to find user by ID
+let ObjectID = require('mongodb').ObjectID;
 
 // get email services
 const email = require('../services/sparkpost');
@@ -53,6 +55,9 @@ function createLinkCode(type) {
 
 // check link codes are valid
 function checkCodeTime(linkCode) {
+    if (!linkCode) {
+        return false;
+    }
     const tokenArr = linkCode.split("-");
     const timestamp = tokenArr[0];
     const now = new Date().getTime();
@@ -131,13 +136,36 @@ exports.signin = function(req, res, next) {
 
 // TO DO VALIDATE EMAIL
 exports.emailConfirm = function(req, res, next) {
-    const emailToken = req.params.emailToken;
+    const EMAIL_CODE = req.params.emailToken;
     // User is already signed in so we just need to check the emailToken matches their token
-    const USER = req.user._id;
-    // TO FIRST actually issue a token when they sign up
-    // TO DO check token is valid
-    // TO DO look up user, check matches
-    res.send({ message: USER });
+    const USER_ID = req.user._id;
+    // Check ecc is valid
+    const timeLeft = checkCodeTime(EMAIL_CODE);
+    // if token expired
+    if (!timeLeft) {
+        return res.status(422).send({ error: 'Invalid link'});
+    }
+    // See if a user with the id exists
+    let obj_id = new ObjectID(USER_ID);
+    db.collection('users').findOne({ _id: obj_id }, function(err, existingUser) {
+        if (err) {
+            return next(err);
+        }
+        // If the email link does match, update the DB to confirm the email
+        if (existingUser.emailConfirmCode === EMAIL_CODE) {
+            // update to db
+            db.collection('users').updateOne({ _id: obj_id }, { $set: { "emailConfirmed" : true }, $unset: { "emailConfirmCode": "" } }, function(err, updated) {
+                if (err) {
+                    return next(err);
+                }
+                // Respond to request as email is confirmed
+                return res.json({ message: 'Email confirmed', timeleft: timeLeft });
+            });
+        } else {
+            // either the user doesnt exist or the code doesn't match so link is invalid
+            return res.status(422).send({ error: 'Invalid link'});
+        }
+    });
 };
 
 exports.forgotpw = function(req, res, next) {

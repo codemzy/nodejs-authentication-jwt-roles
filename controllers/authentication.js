@@ -52,8 +52,8 @@ function createLinkCode(type) {
 }
 
 // check reset valid
-function checkResetTime(resetToken) {
-    const tokenArr = resetToken.split("-");
+function checkResetTime(linkCode) {
+    const tokenArr = linkCode.split("-");
     const timestamp = tokenArr[0];
     const now = new Date().getTime();
     const difference = timestamp - now;

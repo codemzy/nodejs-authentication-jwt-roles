@@ -57,7 +57,12 @@ function checkResetTime(resetToken) {
     const timestamp = tokenArr[0];
     const now = new Date().getTime();
     const difference = timestamp - now;
-    const timeLeft = Math.floor(difference / 1000 / 60) + 60;
+    // default to 1 hour
+    let timeLeft = Math.floor(difference / 1000 / 60) + 60;
+    // if email confirmation expire in 24 hours
+    if (tokenArr[2] === "ecc") {
+        timeLeft = Math.floor(difference / 1000 / 60) + 60 * 24;
+    }
     if (timeLeft < 1) {
         // expired
         return false;

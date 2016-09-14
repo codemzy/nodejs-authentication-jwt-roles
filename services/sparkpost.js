@@ -19,7 +19,8 @@ exports.welcomeEmail = function (email, emailConfirmCode) {
           <p>You can login to your ' + APP_NAME + ' account right now to get started.</p>\
           <p>Please click the link below to confirm your email address and fully activate your account.</p>\
           <p>' + emailConfirmCode + '</p>\
-          <p>Have any questions? Just send us an email! We’re always here to help.</p>\
+          <p>This email confirmation link will expire in 24 hours.</p>\
+          <p>Have any questions? Just send us an email! We\'re always here to help.</p>\
           <p>Support at ' + APP_NAME + '</p>\
           </body></html>'
         },

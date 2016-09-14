@@ -26,32 +26,30 @@ exports.checkLockOut = function(time) {
 exports.failedLogIn = function(ip, user, callback) {
     const NOW = new Date().getTime();
     const FAIL_OBJ = { "time": NOW, "ip": ip };
-    let lockObj = {};
-    // if this is first failed attempt
-    if (!user.lockOut) {
-        lockObj.lockedOut = false;
-        lockObj.fails = [FAIL_OBJ];
-    }
-    if (user.lockOut && user.lockOut.fails.length > 5) {
-        let validFails = user.lockOut.filter.map((fail) => {
+    let lockObj = {
+        lockedOut: false,
+        fails: user.lockOut.fails || []
+    };
+    // push this fail onto the fails array
+    lockObj.fails.push(FAIL_OBJ);
+    // if more than 5 fails
+    if (lockObj.fails.length > 5) {
+        let validFails = lockObj.fails.filter((fail) => {
             return this.checkLockOut(fail.time);
         }); 
-        validFails.push(FAIL_OBJ);
         lockObj.fails = validFails;
-        if (validFails > 9) {
+        if (validFails.length > 9) {
             lockObj.lockedOut = true;
             lockObj.time = NOW;
-        } else {
-            lockObj.lockedOut = false;
-        }
+        } 
     }
     // update to db
     db.collection('users').updateOne({ email: user.email }, { $set: { "lockOut" : lockObj } }, function(err, updated) {
         if (err) {
-            return callback(err);
+            return callback();
         }
         // Callback indicating if user now locked out
-        return callback(null, lockObj.lockedOut);
+        return callback();
     });
 }.bind(this);
 

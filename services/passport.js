@@ -59,10 +59,11 @@ const localLogin = new LocalStrategy(localOptions, function(req, email, password
                 const IP = req.headers["x-forwarded-for"];
                 lockout.failedLogIn(IP, user, function(err, isLockedOut) {
                     if (err) {
-                        console.log("Problem updating user lockedOut object");
+                        return done(err);
                     }
-                    return done(null, false);
+                    return;
                 });
+                return done(null, false);
             }
             return done(null, user);
         });

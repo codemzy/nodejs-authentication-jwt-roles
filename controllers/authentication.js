@@ -92,6 +92,14 @@ exports.signup = function(req, res, next) {
     if (!validate.checkString(PASSWORD)) {
         return res.status(422).send({ error: 'Password is not valid'});
     }
+    // check if password is long enough
+    if (!validate.checkPasswordLength(PASSWORD)) {
+        return res.status(422).send({ error: 'Password is too short'});
+    }
+    // check if password and email match each other
+    if (EMAIL === PASSWORD) {
+        return res.status(422).send({ error: 'Password must not match email address'});
+    }
     // See if a user with the given email exists
     db.collection('users').findOne({ email: EMAIL }, function(err, existingUser) {
         if (err) {
@@ -236,6 +244,14 @@ exports.resetpw = function(req, res, next) {
     // check if password is a string
     if (!validate.checkString(PASSWORD)) {
         return res.status(422).send({ error: 'Password is not valid'});
+    }
+    // check if password is long enough
+    if (!validate.checkPasswordLength(PASSWORD)) {
+        return res.status(422).send({ error: 'Password is too short'});
+    }
+    // check if password and email match each other
+    if (EMAIL === PASSWORD) {
+        return res.status(422).send({ error: 'Password must not match email address'});
     }
     // See if a user with the given email exists
     db.collection('users').findOne({ email: EMAIL }, function(err, existingUser) {

@@ -29,6 +29,15 @@ exports.checkEmail = function(email) {
   return re.test(email);
 };
 
+// check password length
+exports.checkPasswordLength = function(password) {
+    if (password.length < 8) {
+        return false;
+    } else {
+        return true;
+    }
+};
+
 // check if it is a string
 exports.checkString = function(text) {
     if (typeof(text) === 'string') {

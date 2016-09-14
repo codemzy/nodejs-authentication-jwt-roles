@@ -51,8 +51,8 @@ function createLinkCode(type) {
     return linkCode;
 }
 
-// check reset valid
-function checkResetTime(linkCode) {
+// check link codes are valid
+function checkCodeTime(linkCode) {
     const tokenArr = linkCode.split("-");
     const timestamp = tokenArr[0];
     const now = new Date().getTime();
@@ -178,7 +178,7 @@ exports.forgotpw = function(req, res, next) {
 
 exports.resetCheck = function(req, res, next) {
     const resetToken = req.params.resetToken;
-    const timeLeft = checkResetTime(resetToken);
+    const timeLeft = checkCodeTime(resetToken);
     if (!timeLeft) {
         // TOKEN NOT VALID
         return res.status(422).send({ error: 'Reset link has expired'});
@@ -197,7 +197,7 @@ exports.resetpw = function(req, res, next) {
         return res.status(422).send({ error: 'You must provide email and new password'});
     }
     // check if reset token time is still valid
-    if (!RESET_TOKEN || !checkResetTime(RESET_TOKEN)) {
+    if (!RESET_TOKEN || !checkCodeTime(RESET_TOKEN)) {
         return res.status(422).send({ error: 'Your forgotten password link has expired, you must use the link within 1 hour'});
     }
     // check if email is a string and a valid email format

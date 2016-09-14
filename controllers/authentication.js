@@ -41,6 +41,16 @@ function hashPassword(password, callback) {
     });
 }
 
+// create link code 
+// for confirming email and forgotten passwords
+function createLinkCode(type) {
+    // timestamp so can check age and random number to create linkCode
+    const timestamp = new Date().getTime();
+    const randomNum = Math.floor(Math.random() * 10000);
+    const linkCode = timestamp + '-' + randomNum + '-' + type;
+    return linkCode;
+}
+
 // check reset valid
 function checkResetTime(resetToken) {
     const tokenArr = resetToken.split("-");
@@ -86,12 +96,14 @@ exports.signup = function(req, res, next) {
             if (err) {
                 return next(err);
             }
+            // create email confirm code
+            const emailConfirmCode = createLinkCode("ecc");
             // create and save user record
             const USER = {
                 email: EMAIL,
                 password: hash,
                 emailConfirmed: false,
-                emailLinkCode: "TO DO"
+                emailConfirmCode: emailConfirmCode
             };
             // save the user we just created
             db.collection('users').insertOne(USER, function(err, result) {
@@ -99,7 +111,7 @@ exports.signup = function(req, res, next) {
                     return next(err);
                 }
                 // Send a welcome email
-                email.welcomeEmail(EMAIL);
+                email.welcomeEmail(EMAIL, emailConfirmCode);
                 // Respond to request indicating the user was created
                 res.json({ token: tokenForUser({ id: result.insertedId }) });
             });
@@ -137,10 +149,8 @@ exports.forgotpw = function(req, res, next) {
         // If a user with the email does exist, send an email with a reset password link
         // link expires after an hour, add a token to the user in the DB and this needs to match the token and email and not be expired
         if (existingUser) {
-            // timestamp so can check if over an hour old and random number to create resetToken
-            const timestamp = new Date().getTime();
-            const randomNum = Math.floor(Math.random() * 10000);
-            const resetToken = timestamp + '-' + randomNum;
+            // create linkCode for pw reset
+            const resetToken = createLinkCode("pwr");
             // add to db
             db.collection('users').updateOne({ email: EMAIL }, { $set: { "resetPassword" : resetToken } }, function(err, updated) {
                 if (err) {

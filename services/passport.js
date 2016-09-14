@@ -26,8 +26,13 @@ const db = require('../server').db;
 let ObjectID = require('mongodb').ObjectID;
 
 // Create local strategy for signing in with username and password
-const localOptions = { usernameField: 'email' };
-const localLogin = new LocalStrategy(localOptions, function(email, password, done) {
+const localOptions = { 
+    usernameField: 'email', 
+    // ADDED FOR LOCKOUT - to pass in the req from our route (check if a user is lockout to prevent brute force)
+    passReqToCallback : true 
+};
+
+const localLogin = new LocalStrategy(localOptions, function(req, email, password, done) {
     // verify the email and password call done with user if correct
     // otherwise call done with false
     db.collection('users').findOne({ email: email }, function(err, user) {
@@ -44,6 +49,7 @@ const localLogin = new LocalStrategy(localOptions, function(email, password, don
                 return done(err);
             }
             if (!isMatch) {
+                console.log(req.headers);
                 return done(null, false);
             }
             return done(null, user);

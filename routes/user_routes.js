@@ -25,13 +25,13 @@ router.post('/signin', jsonParser, requireSignIn, Authentication.signin);
 
 // VERIFY EMAIL
 // require user to be signed in to verify email address
-router.get('/verify/:emailToken', requireAuth, Authentication.emailConfirm);
+router.get('/verify/:emailCode', requireAuth, Authentication.emailConfirm);
     
 // FORGOT PASSWORD
 // check user email exists in DB and set resetToken
 router.post('/forgotten', jsonParser, Authentication.forgotpw);
 // check a reset link is valid
-router.get('/reset/:resetToken', Authentication.resetCheck);
+router.get('/reset/:resetCode', Authentication.resetCheck);
 // take password data and set new password
 router.post('/password/reset', jsonParser, Authentication.resetpw);
 

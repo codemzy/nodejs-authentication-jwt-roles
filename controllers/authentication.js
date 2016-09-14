@@ -136,7 +136,7 @@ exports.signin = function(req, res, next) {
 
 // TO DO VALIDATE EMAIL
 exports.emailConfirm = function(req, res, next) {
-    const EMAIL_CODE = req.params.emailToken;
+    const EMAIL_CODE = req.params.emailCode;
     // User is already signed in so we just need to check the emailToken matches their token
     const USER_ID = req.user._id;
     // Check ecc is valid
@@ -205,8 +205,8 @@ exports.forgotpw = function(req, res, next) {
 };
 
 exports.resetCheck = function(req, res, next) {
-    const resetToken = req.params.resetToken;
-    const timeLeft = checkCodeTime(resetToken);
+    const RESET_CODE = req.params.resetCode;
+    const timeLeft = checkCodeTime(RESET_CODE);
     if (!timeLeft) {
         // TOKEN NOT VALID
         return res.status(422).send({ error: 'Reset link has expired'});
@@ -219,13 +219,13 @@ exports.resetCheck = function(req, res, next) {
 exports.resetpw = function(req, res, next) {
     const EMAIL = req.body.email;
     const PASSWORD = req.body.password;
-    const RESET_TOKEN = req.body.reset;
+    const RESET_CODE = req.body.reset;
     // check if any data missing
     if (!EMAIL || !PASSWORD) {
         return res.status(422).send({ error: 'You must provide email and new password'});
     }
     // check if reset token time is still valid
-    if (!RESET_TOKEN || !checkCodeTime(RESET_TOKEN)) {
+    if (!RESET_CODE || !checkCodeTime(RESET_CODE)) {
         return res.status(422).send({ error: 'Your forgotten password link has expired, you must use the link within 1 hour'});
     }
     // check if email is a string and a valid email format
@@ -246,7 +246,7 @@ exports.resetpw = function(req, res, next) {
             return res.status(422).send({ error: 'Email not found'});
         }
         // If the reset link doesn't match, return an error
-        if (existingUser.resetPassword !== RESET_TOKEN) {
+        if (existingUser.resetPassword !== RESET_CODE) {
             return res.status(422).send({ error: 'Reset link not valid'});
         }
         // If a user with email does exist and reset matches, hash new passord

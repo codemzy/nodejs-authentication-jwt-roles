@@ -3,6 +3,9 @@
 // get db connection 
 const db = require('../server').db;
 
+// get email services
+const email = require('../services/sparkpost');
+
 // check if user is locked out of account
 exports.checkLockOut = function(time) {
     // if no time then no lockout
@@ -48,8 +51,16 @@ exports.failedLogIn = function(ip, user, callback) {
         if (err) {
             return callback(err);
         }
-        // Callback indicating if user now locked out
-        return callback(null, lockObj.lockedOut);
+        // if the account has been locked out, email the user to let them know
+        email.lockedOutEmail(user.email, function(err, success) {
+            if (err) {
+                throw(err);
+            }
+            // Callback indicating if user now locked out
+            return callback(null, lockObj.lockedOut);
+        });
+        // // Callback indicating if user now locked out
+        // return callback(null, lockObj.lockedOut);
     });
 }.bind(this);
 

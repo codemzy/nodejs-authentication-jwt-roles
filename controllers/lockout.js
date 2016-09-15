@@ -46,10 +46,10 @@ exports.failedLogIn = function(ip, user, callback) {
     // update to db
     db.collection('users').updateOne({ email: user.email }, { $set: { "lockOut" : lockObj } }, function(err, updated) {
         if (err) {
-            return callback();
+            return callback(err);
         }
         // Callback indicating if user now locked out
-        return callback();
+        return callback(null, lockObj.lockedOut);
     });
 }.bind(this);
 

@@ -199,10 +199,9 @@ exports.forgotpw = function(req, res, next) {
                 // email sent return success message
                 return res.send({ message: 'Thank you. Please check your email.', code: 'lo' });
             });
-        }
-        // If a user with the email does exist, send an email with a reset password link
-        // link expires after an hour, add a token to the user in the DB and this needs to match the token and email and not be expired
-        if (existingUser) {
+        } else if (existingUser) {
+            // If a user with the email does exist, send an email with a reset password link
+            // link expires after an hour, add a token to the user in the DB and this needs to match the token and email and not be expired
             // create linkCode for pw reset
             const resetToken = createLinkCode("pwr");
             // add to db

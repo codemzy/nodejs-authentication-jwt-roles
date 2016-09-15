@@ -77,8 +77,9 @@ exports.lockedOutEmail = function (email, callback) {
           subject: APP_NAME + ': Account Locked Out',
           html:'<html><body><p>Someone (hopefully you) has had 10 failed log in attempts on the ' + APP_NAME + ' account for ' + email + '.</p>\
           <p>For your security, we have locked your account for 60 minutes.</p>\
+          <p>You will not be able to reset your password or log in for 1 hour.</p>\
           <p>After 60 minutes, you can log in as normal, or request a password reset by selecting \'Forgot my password\' from the log in page.</p>\
-          <p>The account locks will clear on their own after an hour. Do not request more password resets while you wait.</p>\
+          <p>The account locks will clear on their own after an hour.</p>\
           <p>Support at ' + APP_NAME + '</p>\
           </body></html>'
         },

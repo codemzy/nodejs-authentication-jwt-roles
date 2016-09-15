@@ -52,15 +52,15 @@ exports.failedLogIn = function(ip, user, callback) {
             return callback(err);
         }
         // if the account has been locked out, email the user to let them know
-        email.lockedOutEmail(user.email, function(err, success) {
-            if (err) {
-                throw(err);
-            }
-            // Callback indicating if user now locked out
-            return callback(null, lockObj.lockedOut);
-        });
-        // // Callback indicating if user now locked out
-        // return callback(null, lockObj.lockedOut);
+        if (lockObj.lockedOut) {
+            email.lockedOutEmail(user.email, function(err, success) {
+                if (err) {
+                    throw(err);
+                }
+            });
+        }
+        // Callback indicating if user now locked out
+        return callback(null, lockObj.lockedOut);
     });
 }.bind(this);
 

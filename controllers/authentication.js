@@ -191,7 +191,10 @@ exports.forgotpw = function(req, res, next) {
         }
         // if the user is locked out, we send them an email telling them to try again in an hour
         if (existingUser.lockOut && lockout.checkLockOut(existingUser.lockOut.time)) {
-            // Send forgotten password email
+            // If a user with the email exists and they are locked out
+            // If they have had 5 emails this hour we don't want to spam them so no email
+            // TO DO
+            // Other wise send them an email advising the account is temp locked out
             email.lockedOutEmail(EMAIL, function(err, success) {
                 if (err) {
                     return next(err);
@@ -200,7 +203,7 @@ exports.forgotpw = function(req, res, next) {
                 return res.send({ message: 'Thank you. Please check your email.', code: 'lo' });
             });
         } else if (existingUser) {
-            // If a user with the email does exist, send an email with a reset password link
+            // If a user with the email exists and they are not locked out, send an email with a reset password link
             // link expires after an hour, add a token to the user in the DB and this needs to match the token and email and not be expired
             // create linkCode for pw reset
             const resetToken = createLinkCode("pwr");

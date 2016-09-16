@@ -80,6 +80,10 @@ exports.failedLogIn = function(ip, user, callback) {
 
 // check if email notification of same type been sent in last 10 minutes
 exports.sentMailCheck = function(subject, sentMail) {
+    // if no sentMail
+    if (!sentMail) {
+        return false;
+    }
     const NOW = new Date().getTime();
     let sentPrev = false;
     sentMail.map((mail) => {

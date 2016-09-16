@@ -78,6 +78,8 @@ exports.failedLogIn = function(ip, user, callback) {
 
 // ------ EMAIL FLOOD LOCKS ------
 
+// Currently only used on forgotPasswordEmail as only email that could be repeatedly triggered by user
+
 // check if email notification of same type been sent in last 10 minutes
 exports.sentMailCheck = function(subject, sentMail) {
     // if no sentMail

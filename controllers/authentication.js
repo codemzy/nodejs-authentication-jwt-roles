@@ -194,6 +194,9 @@ exports.forgotpw = function(req, res, next) {
             // If a user with the email exists and they are locked out 
             // they will have already had an a email advising no resets for 60 mins
             return res.send({ message: 'Thank you. Please check your email.', code: 'lo' });
+        } else if (lockout.sentMailCheck('forgotPasswordEmail', existingUser.sentMail)) {
+            // If the forgotPasswordEmail has already been sent in last 10 mins
+            return res.send({ message: 'Thank you. Please check your email.', code: 'le' });
         } else if (existingUser) {
             // If a user with the email exists and they are not locked out, send an email with a reset password link
             // link expires after an hour, add a token to the user in the DB and this needs to match the token and email and not be expired

@@ -202,8 +202,11 @@ exports.forgotpw = function(req, res, next) {
             // link expires after an hour, add a token to the user in the DB and this needs to match the token and email and not be expired
             // create linkCode for pw reset
             const resetToken = createLinkCode("pwr");
+            // so we can update the sentMail array
+            const IP = req.headers["x-forwarded-for"];
+            const sentMail = lockout.sentMailTracker(IP, 'forgotPasswordEmail', existingUser.sentMail);
             // add to db
-            db.collection('users').updateOne({ email: EMAIL }, { $set: { "resetPassword" : resetToken } }, function(err, updated) {
+            db.collection('users').updateOne({ email: EMAIL }, { $set: { "resetPassword" : resetToken, "sentMail": sentMail } }, function(err, updated) {
                 if (err) {
                     return next(err);
                 }

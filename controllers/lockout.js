@@ -84,23 +84,17 @@ exports.sentMailCheck = function(subject, sentMail) {
 };
 
 // to track sent email notifications to stop / reduce spam attacks
-exports.sentMailTracker = function(ip, subject, user, callback) {
+exports.sentMailTracker = function(ip, subject, sentMail) {
     const NOW = new Date().getTime();
     const SENT_OBJ = { "time": NOW, "ip": ip, "email": subject };
-    let sentArr = user.sentMail || [];
+    let sentArr = sentMail || [];
     // push this email onto the sent array
     sentArr.push(SENT_OBJ);
     // only keep last 10 records
     if (sentArr.length > 10) {
         sentArr.shift();
     }
-    // update to db
-    db.collection('users').updateOne({ email: user.email }, { $set: { "sentMail" : sentArr } }, function(err, updated) {
-        if (err) {
-            return callback(err);
-        }
-        // Callback as user has been updated
-        return callback(null, true);
-    });
+    // return updated sentMail array
+    return sentArr;
 };
             

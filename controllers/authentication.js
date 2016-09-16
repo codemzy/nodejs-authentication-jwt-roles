@@ -141,7 +141,7 @@ exports.signup = function(req, res, next) {
 
 exports.signin = function(req, res, next) {
     // If account was locked out before we can remove the lock out
-    if (req.user.lockOut.lockedOut) {
+    if (req.user.lockOut && req.user.lockOut.lockedOut) {
         lockout.removeLockOut(req.user.email, function(err, success) {
             if (err) {
                 console.log("Problem removing Lockout");

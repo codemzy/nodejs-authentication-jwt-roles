@@ -27,6 +27,16 @@ exports.checkLockOut = function(time) {
     }
 };
 
+// remove lock out
+exports.removeLockOut = function(email, callback) {
+    db.collection('users').updateOne({ email: email }, { $set: { "lockOut.lockedOut" : false } }, function(err, updated) {
+        if (err) {
+            return callback(err);
+        }
+        return callback(null, "Lock out removed");
+    });
+};
+
 // add a failed log in attempt to account
 exports.failedLogIn = function(ip, user, callback) {
     const NOW = new Date().getTime();

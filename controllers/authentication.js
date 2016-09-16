@@ -140,6 +140,14 @@ exports.signup = function(req, res, next) {
 };
 
 exports.signin = function(req, res, next) {
+    // If account was locked out before we can remove the lock out
+    if (req.user.lockOut.lockedOut) {
+        lockout.removeLockOut(req.user.email, function(err, success) {
+            if (err) {
+                console.log("Problem removing Lockout");
+            }
+        });
+    }
     // User has already had their email and password auth'd we just need to give them a token
     res.send({ token: tokenForUser({ id: req.user._id }) });
 };
@@ -189,8 +197,7 @@ exports.forgotpw = function(req, res, next) {
         if (err) {
             return next(err);
         }
-        // if the user is locked out, we send them an email telling them to try again in an hour
-        if (existingUser.lockOut && lockout.checkLockOut(existingUser.lockOut.time)) {
+        if (existingUser.lockOut.lockedOut && lockout.checkLockOut(existingUser.lockOut.time)) {
             // If a user with the email exists and they are locked out 
             // they will have already had an a email advising no resets for 60 mins
             return res.send({ message: 'Thank you. Please check your email.', code: 'lo' });

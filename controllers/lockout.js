@@ -6,6 +6,8 @@ const db = require('../server').db;
 // get email services
 const email = require('../services/sparkpost');
 
+// ------ ACCOUNT LOCK OUT ------
+
 // check if user is locked out of account
 exports.checkLockOut = function(time) {
     // if no time then no lockout
@@ -63,6 +65,23 @@ exports.failedLogIn = function(ip, user, callback) {
         return callback(null, lockObj.lockedOut);
     });
 }.bind(this);
+
+// ------ EMAIL FLOOD LOCKS ------
+
+// check if email notification of same type been sent in last 10 minutes
+exports.sentMailCheck = function(subject, sentMail) {
+    const NOW = new Date().getTime();
+    let sentPrev = false;
+    sentMail.map((mail) => {
+        const difference = mail.time - NOW;
+        let timeLeft = Math.floor(difference / 1000 / 60) + 10;
+        // if there is an email with the same subject sent in the last 10 mins
+        if (mail.email === subject && timeLeft > 0) {
+            sentPrev = true;
+        }
+    });
+    return sentPrev;
+};
 
 // to track sent email notifications to stop / reduce spam attacks
 exports.sentMailTracker = function(ip, subject, user, callback) {

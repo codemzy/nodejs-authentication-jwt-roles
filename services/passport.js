@@ -91,7 +91,11 @@ const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
             return done(err, false);
         }
         // if we find a user and they are not lockedOut
-        if (user && !user.lockOut.lockedOut) {
+        if (user) {
+            // if the user is locked out
+            if (user.lockOut && user.lockOut.lockedOut && lockout.checkLockOut(user.lockOut.time)) {
+                done(null, false);
+            }
             done(null, user);
         } else {
             done(null, false);

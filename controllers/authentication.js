@@ -197,7 +197,7 @@ exports.forgotpw = function(req, res, next) {
         if (err) {
             return next(err);
         }
-        if (existingUser.lockOut.lockedOut && lockout.checkLockOut(existingUser.lockOut.time)) {
+        if (existingUser.lockOut && existingUser.lockOut.lockedOut && lockout.checkLockOut(existingUser.lockOut.time)) {
             // If a user with the email exists and they are locked out 
             // they will have already had an a email advising no resets for 60 mins
             return res.send({ message: 'Thank you. Please check your email.', code: 'lo' });

@@ -47,7 +47,7 @@ const localLogin = new LocalStrategy(localOptions, function(req, email, password
             return done(null, false);
         }
         // account locked out
-        if (user.lockOut.lockedOut && lockout.checkLockOut(user.lockOut.time)) {
+        if (user.lockOut && user.lockOut.lockedOut && lockout.checkLockOut(user.lockOut.time)) {
             return done(null, false);
         }
         // email found, compare passwords

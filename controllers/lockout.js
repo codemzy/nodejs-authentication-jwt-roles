@@ -65,7 +65,7 @@ exports.failedLogIn = function(ip, user, callback) {
 }.bind(this);
 
 // to track sent email notifications to stop / reduce spam attacks
-exports.emailTracker = function(ip, subject, user, callback) {
+exports.sentMailTracker = function(ip, subject, user, callback) {
     const NOW = new Date().getTime();
     const SENT_OBJ = { "time": NOW, "ip": ip, "email": subject };
     let sentArr = user.sentMail || [];

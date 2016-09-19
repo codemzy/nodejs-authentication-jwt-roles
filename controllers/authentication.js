@@ -189,7 +189,7 @@ exports.emailConfirm = function(req, res, next) {
 exports.forgotpw = function(req, res, next) {
     const EMAIL = req.body.email;
     // check if any data missing
-    if (!EMAIL || !validate.checkString(EMAIL)) {
+    if (!EMAIL || !validate.checkString(EMAIL) || !validate.checkEmail(EMAIL)) {
         return res.status(422).send({ error: 'You must provide a valid email address'});
     }
     // See if a user with the given email exists

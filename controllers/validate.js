@@ -46,3 +46,12 @@ exports.checkString = function(text) {
         return false;
     }
 };
+
+// check if it is a number 
+exports.checkNum = function(num) {
+    if (typeof(num) === 'number') {
+        return true;
+    } else {
+        return false;
+    }
+};

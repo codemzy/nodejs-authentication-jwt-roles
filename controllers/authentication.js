@@ -180,8 +180,8 @@ exports.emailConfirm = function(req, res, next) {
                 if (err) {
                     return next(err);
                 }
-                // Respond to request as email is confirmed
-                return res.json({ message: 'Email confirmed', timeleft: timeLeft });
+                // Respond to request as email is confirmed and issue a new token as permissions have been updated
+                return res.json({ message: 'Email confirmed', token: tokenForUser({ id: USER_ID }) });
             });
         } else {
             // either the user doesnt exist or the code doesn't match so link is invalid

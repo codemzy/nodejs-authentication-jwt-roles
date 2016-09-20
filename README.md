@@ -7,14 +7,14 @@
     ------------------------------------------------------------------------------ 
 
 
-Backend Authentication API with NodeJS
-Removed Mongoose and just using MongoDB
-// For Mongoose version see https://github.com/codemzy/nodejs-authentication-jwt
+Backend Authentication API with NodeJS and MongoDB
+With Roles
 
 Using:
 
     "bcrypt-nodejs": "~0.0.3",
     "body-parser": "~1.15.2",
+    "cors": "~2.8.0",
     "dotenv": "~2.0.0",
     "express": "~4.14.0",
     "jwt-simple": "~0.5.0",
@@ -22,4 +22,6 @@ Using:
     "morgan": "~1.7.0",
     "passport": "~0.3.2",
     "passport-jwt": "~2.1.0",
-    "passport-local": "~1.0.0"
+    "passport-local": "~1.0.0",
+    "sparkpost": "~1.3.8"
+    

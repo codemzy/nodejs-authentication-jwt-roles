@@ -55,3 +55,8 @@ exports.checkNum = function(num) {
         return false;
     }
 };
+
+// check if it is a array 
+exports.checkArr = function(arr) {
+    return arr.constructor === Array;
+};

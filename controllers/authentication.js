@@ -18,6 +18,8 @@ const email = require('../services/sparkpost');
 const validate = require('./validate');
 // get locked out functions
 const lockout = require('./lockout');
+// get roles functions
+const roles = require('./roles');
 
 // create token
 function tokenForUser(user) {
@@ -171,8 +173,10 @@ exports.emailConfirm = function(req, res, next) {
         }
         // If the email link does match, update the DB to confirm the email
         if (existingUser.emailConfirmCode === EMAIL_CODE) {
+            // add trial role to permissions
+            const PERMISSIONS = roles.addRole(3, existingUser);
             // update to db
-            db.collection('users').updateOne({ _id: obj_id }, { $set: { "emailConfirmed" : true }, $unset: { "emailConfirmCode": "" } }, function(err, updated) {
+            db.collection('users').updateOne({ _id: obj_id }, { $set: { "emailConfirmed" : true, "permissions": PERMISSIONS }, $unset: { "emailConfirmCode": "" } }, function(err, updated) {
                 if (err) {
                     return next(err);
                 }

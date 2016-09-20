@@ -19,7 +19,7 @@ exports.addRole = function(role, user) {
     const NOW = new Date().getTime();
     let permissions = {
         updatedAt: NOW,
-        roles: user.permissions.roles || []
+        roles: user.permissions && user.permissions.roles ? user.permissions.roles : []
     };
     // check the user info is present and of valid types
     if (!user || !validate.checkEmail(user.email) || !validate.checkArr(permissions.roles)) {
@@ -43,7 +43,7 @@ exports.addRoleDB = function(role, user, callback) {
     const NOW = new Date().getTime();
     let permissions = {
         updatedAt: NOW,
-        roles: user.permissions.roles || []
+        roles: user.permissions && user.permissions.roles ? user.permissions.roles : []
     };
     // make sure the role is a number and exists in the roles object
     if (!role || !validate.checkNum(role) || !ROLES[role]) {
@@ -71,7 +71,7 @@ exports.deleteRoleDB = function(role, user, callback) {
     const NOW = new Date().getTime();
     let permissions = {
         updatedAt: NOW,
-        roles: user.permissions.roles || []
+        roles: user.permissions && user.permissions.roles ? user.permissions.roles : []
     };
     // make sure the role is a number and exists in the roles object
     if (!role || !validate.checkNum(role) || !ROLES[role]) {

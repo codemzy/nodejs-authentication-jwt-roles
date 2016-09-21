@@ -80,8 +80,13 @@ const jwtOptions = {
 };
 
 // Create JWT strategy
-// payload is the token (sub) and timestamp (iat)
+// payload is the token (sub) and timestamp (iat) and expire time (exp)
 const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
+    // check if the token has expired
+    const NOW = new Date().getTime();
+    if (payload.exp < NOW) {
+        return done(null, false);
+    }
     // see if the user ID in the payload exists in our database
     // if it does call done with that user
     // otherwise call done without a user object
@@ -94,16 +99,16 @@ const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
         if (user) {
             if (user.lockOut && user.lockOut.lockedOut && lockout.checkLockOut(user.lockOut.time)) {
                 // if the user is locked out
-                done(null, false);
+                return done(null, false);
             } else if (payload.iat < user.permissions.updatedAt) {
                 // if the users permissions have changed since the token was issued
-                done(null, false);
+                return done(null, false);
             } else {
                 // the user is not locked out and the token is valid
-                done(null, user);
+                return done(null, user);
             }
         } else {
-            done(null, false);
+            return done(null, false);
         }
     });
 });

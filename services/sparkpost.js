@@ -1,4 +1,4 @@
-require('dotenv').config({path: '../private/.env'});
+// get the API key
 const SPARKPOST_KEY = process.env.SPARKPOST_KEY;
 
 var SparkPost = require('sparkpost');

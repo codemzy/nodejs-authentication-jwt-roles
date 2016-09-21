@@ -3,7 +3,7 @@ const app = express();
 const morgan = require('morgan');
 const mongo = require('mongodb').MongoClient;
 
-require('dotenv').config();
+require('dotenv').config({path: '../private/.env'});
 
 app.use(express.static('public'));
 

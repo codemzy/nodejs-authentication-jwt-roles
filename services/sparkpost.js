@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({path: '../private/.env'});
 const SPARKPOST_KEY = process.env.SPARKPOST_KEY;
 
 var SparkPost = require('sparkpost');

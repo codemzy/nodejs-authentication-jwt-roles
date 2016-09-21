@@ -3,7 +3,7 @@
 const jwt = require('jwt-simple');
 const bcrypt = require('bcrypt-nodejs');
 
-require('dotenv').config();
+require('dotenv').config({path: '../private/.env'});
 const secret = process.env.SECRET_STR;
 
 // get db connection 
